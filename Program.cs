@@ -49,11 +49,11 @@ class Build
     static void BuildKoIndex()
     {
         var dict = new Dict();
-        var d0Neighborhood = new Dictionary<ulong, List<uint>>();
-        var d1Neighborhood = new Dictionary<ulong, List<uint>>();
-        for (uint i = 0; i < dict.Entries.Count; i++)
+        var d0Neighborhood = new Dictionary<ulong, List<int>>();
+        var d1Neighborhood = new Dictionary<ulong, List<int>>();
+        for (int i = 0; i < dict.Entries.Count; i++)
         {
-            var entry = dict.Entries[Convert.ToInt32(i)];
+            var entry = dict.Entries[i];
             var jamos = Hangeul.Hangeuls2Jamos(entry.Word);
             var wordHash = Farmhash.Sharp.Farmhash.Hash64(jamos);
             AddItem(d0Neighborhood, wordHash, i);
