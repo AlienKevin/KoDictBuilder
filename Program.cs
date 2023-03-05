@@ -61,7 +61,7 @@ class Build
             AddItem(d1Neighborhood, wordHash, i);
             for (int k = 0; k < jamos.Count(); k++)
             {
-                var d1WordHash = Farmhash.Sharp.Farmhash.Hash64(jamos.Remove(k));
+                var d1WordHash = Farmhash.Sharp.Farmhash.Hash64(jamos.Remove(k, 1));
                 AddItem(d1Neighborhood, d1WordHash, i);
             }
         }
