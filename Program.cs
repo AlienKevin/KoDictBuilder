@@ -32,14 +32,40 @@ class Build
         }
     }
 
+    static void AddItem<K, V>(Dictionary<K, List<V>> dict, K key, V value)
+    where K : notnull where V : notnull
+    {
+        List<V> items;
+        if (dict.TryGetValue(key, out items))
+        {
+            items.Add(value);
+        }
+        else
+        {
+            dict.Add(key, new List<V> { value });
+        }
+    }
+
     static void BuildKoIndex()
     {
         var dict = new Dict();
-        foreach (var entry in dict.Entries)
+        var d0Neighborhood = new Dictionary<ulong, List<uint>>();
+        var d1Neighborhood = new Dictionary<ulong, List<uint>>();
+        for (uint i = 0; i < dict.Entries.Count; i++)
         {
+            var entry = dict.Entries[Convert.ToInt32(i)];
             var jamos = Hangeul.Hangeuls2Jamos(entry.Word);
-            ulong hash64 = Farmhash.Sharp.Farmhash.Hash64("Hello");
-            // TODO
+            var wordHash = Farmhash.Sharp.Farmhash.Hash64(jamos);
+            AddItem(d0Neighborhood, wordHash, i);
+            // 1-deletion-neighborhood
+            AddItem(d1Neighborhood, wordHash, i);
+            for (int k = 0; k < jamos.Count(); k++)
+            {
+                var d1WordHash = Farmhash.Sharp.Farmhash.Hash64(jamos.Remove(k));
+                AddItem(d1Neighborhood, d1WordHash, i);
+            }
         }
+        File.WriteAllBytes(path: "../KoDict/d0Neighborhood.msgpack", MessagePackSerializer.Serialize(d0Neighborhood));
+        File.WriteAllBytes(path: "../KoDict/d1Neighborhood.msgpack", MessagePackSerializer.Serialize(d1Neighborhood));
     }
 }
